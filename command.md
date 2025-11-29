@@ -28,10 +28,17 @@ Truy cập trình duyệt để xem giao diện chính:
 Kiểm tra API lấy danh sách sinh viên (đã cấu hình qua Proxy):
 
 ```bash
-# Kiểm tra API qua đường dẫn Proxy /student/
+# Kiểm tra API qua đường dẫn Proxy /student/ json hiện ra sẽ được lấy từ fiel students.json
 curl -s http://localhost/student
+
+# Hoặc sử dụng câu lệnh để đọc từ database của server 3
+curl http://localhost/api/db/student
+# Tương tự câu lệnh trên 
+curl http://localhost:8085/db/student
 ```
-> **Kỳ vọng:** Kết quả trả về chuỗi JSON chứa danh sách sinh viên trong file students.json.
+> **Kỳ vọng:** Kết quả trả về chuỗi JSON chứa danh sách sinh viên.
+
+
 
 ---
 
