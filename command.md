@@ -43,11 +43,7 @@ Bạn có 2 cách để thao tác với dữ liệu: Sử dụng **Giao diện W
 Cách này trực quan, dễ dàng thêm/sửa/xóa dữ liệu mà không cần nhớ lệnh SQL.
 
 1.  **Truy cập Dashboard:** [http://localhost:8082](http://localhost:8082)
-2.  **Đăng nhập (nếu được hỏi):**
-    * **Server:** `relational-database-server`
-    * **Username:** `root`
-    * **Password:** `root`
-3.  **Thao tác dữ liệu:**
+2.  **Thao tác dữ liệu:**
     * Nhìn cột bên trái, chọn database **`studentdb`**.
     * Chọn bảng **`students`**.
     * Bấm tab **Browse (Duyệt)** để xem dữ liệu hiện có.
