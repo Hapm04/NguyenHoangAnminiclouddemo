@@ -5,6 +5,8 @@
 
 Dự án phục vụ mục tiêu học tập về kiến trúc Microservices, Containerization, DevOps và System Administration.
 
+Bổ sung thêm về mục tiêu cụ thể của từng container
+
 ## 2. Kiến trúc & Sơ đồ hệ thống
 Hệ thống bao gồm các container kết nối chung vào mạng nội bộ `cloud-net`.
 
@@ -50,6 +52,8 @@ hotenSVminicloud/
 └── docker-compose.yml              # File điều phối hệ thống
 ```
 
+Có thể nói thêm về các config trong từng container
+
 ### Hướng dẫn khởi chạy
 1.  **Build các image:**
     ```bash
@@ -65,6 +69,7 @@ hotenSVminicloud/
     ```bash
     docker compose ps
     ```
+Hướng dẫn chạy cụ thể của từng container nằm trong file command.md
 
 ## 4. Demo & Kiểm thử (Checklist)
 
@@ -130,6 +135,8 @@ Dự án đã hoàn thành các yêu cầu mở rộng sau:
 9.  **Gateway:** Cấu hình route `/student/` trỏ tới backend.
 10. **Load Balancing:** Cấu hình Nginx Round Robin luân phiên giữa 2 Web Server phụ.
 
+Có thể nói thêm một số thứ ở đây, như server 3 có mở rộng phần giao diện ngoài yêu cầu đề bài, hoặc nói về khó khăn
+
 ## Phụ lục
 * **Link Docker Hub:**
     * *Web Image:* [ ]
@@ -138,3 +145,4 @@ Dự án đã hoàn thành các yêu cầu mở rộng sau:
 * **Log kết quả:** [ ]
 
 ---
+
