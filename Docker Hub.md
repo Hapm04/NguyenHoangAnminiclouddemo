@@ -103,4 +103,4 @@ docker compose -f docker-compose-hub.yml up -d
   ~~~
 
 ---
-> **Ghi chú:** Đảm bảo cổng 8080 và 8085 chưa được sử dụng bởi ứng dụng khác trên máy trước khi chạy lệnh test.
+> **Ghi chú:** Đảm bảo cổng 8080 và 8085 chưa được sử dụng bởi ứng dụng khác trên máy trước khi chạy lệnh test (hoặc có thể đổi cổng 8080 hay 8085 thành cổng khác).
