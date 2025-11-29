@@ -55,8 +55,8 @@ docker stop test-web test-app
 docker rm test-web test-app
 ~~~
 ---
-### 3. Triển khai trọn bộ bằng Docker Compose (Khuyên dùng)
-Đây là cách tối ưu để chạy đồng thời cả Frontend và Backend kết nối với nhau mà không cần gõ nhiều lệnh. Cách này thường được sử dụng khi triển khai lên máy chủ thật (như AWS EC2).
+### 3. Triển khai trọn bộ bằng Docker Compose
+Đây là cách tối ưu để chạy đồng thời cả Frontend và Backend.
 
 * **Bước 1: Tạo file cấu hình**
   Tạo một file tên là `docker-compose-hub.yml` (hoặc copy nội dung này vào file `docker-compose.yml` trên máy chủ) với nội dung sau:
