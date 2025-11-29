@@ -1,6 +1,6 @@
 # 🚀 MyMiniCloud - Hướng dẫn Vận hành & Kiểm thử
 
-Tài liệu này tổng hợp các lệnh cần thiết để khởi động hệ thống, kiểm tra API backend và thao tác với Cơ sở dữ liệu (Database) thông qua Terminal hoặc giao diện Web (phpMyAdmin).
+Tài liệu này tổng hợp các lệnh cần thiết để khởi động hệ thống.
 
 ---
 
@@ -39,7 +39,7 @@ curl -s http://localhost/student/
 
 Bạn có 2 cách để thao tác với dữ liệu: Sử dụng **Giao diện Web (phpMyAdmin)** hoặc **Dòng lệnh (CLI)**.
 
-### 🟢 Cách 1: Sử dụng Giao diện Web (Khuyên dùng)
+### 🟢 Cách 1: Sử dụng Giao diện Web 
 Cách này trực quan, dễ dàng thêm/sửa/xóa dữ liệu mà không cần nhớ lệnh SQL.
 
 1.  **Truy cập Dashboard:** [http://localhost:8082](http://localhost:8082)
