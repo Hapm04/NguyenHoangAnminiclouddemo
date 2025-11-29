@@ -141,5 +141,20 @@ services:
       - ./api-gateway-proxy-server/nginx.conf:/etc/nginx/nginx.conf:ro
     networks: [cloud-net]
     restart: unless-stopped
+  db-dashboard-server:
+    image: phpmyadmin/phpmyadmin:latest
+    container_name: db-dashboard-server
+    environment:
+      PMA_HOST: relational-database-server
+      PMA_PORT: 3306
+      PMA_USER: root
+      PMA_PASSWORD: root
+    ports:
+      - "8082:80" 
+    networks:
+      - cloud-net
+    depends_on:
+      - relational-database-server
+    restart: unless-stopped
 
 
