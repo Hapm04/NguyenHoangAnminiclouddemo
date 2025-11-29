@@ -54,6 +54,53 @@ docker stop test-web test-app
 # Xóa container
 docker rm test-web test-app
 ~~~
+---
+### 3. Triển khai trọn bộ bằng Docker Compose (Khuyên dùng)
+Đây là cách tối ưu để chạy đồng thời cả Frontend và Backend kết nối với nhau mà không cần gõ nhiều lệnh. Cách này thường được sử dụng khi triển khai lên máy chủ thật (như AWS EC2).
+
+* **Bước 1: Tạo file cấu hình**
+  Tạo một file tên là `docker-compose-hub.yml` (hoặc copy nội dung này vào file `docker-compose.yml` trên máy chủ) với nội dung sau:
+
+~~~yaml
+version: '3.8'
+
+services:
+  # Web Frontend (Lấy từ Docker Hub)
+  web-frontend:
+    image: newtz11/myminicloud-web:latest
+    container_name: demo-web
+    ports:
+      - "8080:80"
+    restart: always
+
+  # App Backend (Lấy từ Docker Hub)
+  app-backend:
+    image: newtz11/myminicloud-app:latest
+    container_name: demo-app
+    ports:
+      - "8085:8081"
+    restart: always
+~~~
+
+* **Bước 2: Khởi chạy hệ thống**
+  Tại thư mục chứa file vừa tạo, chạy lệnh:
+
+~~~bash
+docker compose -f docker-compose-hub.yml up -d
+~~~
+
+* **Bước 3: Kiểm tra hoạt động**
+  * **Web:** [http://localhost:8080](http://localhost:8080)
+  * **API:** [http://localhost:8085/hello](http://localhost:8085/hello)
+  * **Trạng thái container:**
+    ~~~bash
+    docker compose -f docker-compose-hub.yml ps
+    ~~~
+
+* **Bước 4: Dừng hệ thống**
+  ~~~bash
+  docker compose -f docker-compose-hub.yml down
+  ~~~
 
 ---
 > **Ghi chú:** Đảm bảo cổng 8080 và 8085 chưa được sử dụng bởi ứng dụng khác trên máy trước khi chạy lệnh test.
