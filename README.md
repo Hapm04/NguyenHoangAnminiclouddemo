@@ -1,1 +1,2 @@
-Please add more detail about the project here and command to run each container requirement 
+Thêm các thông tin về server vào đây để tổng hợp làm báo cáo
+
