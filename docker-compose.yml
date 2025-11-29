@@ -1,0 +1,145 @@
+networks:
+  cloud-net: { name: cloud-net }
+
+volumes:
+  keycloak_data:
+
+services:
+
+  web-frontend-server-1:
+    build: ./web-frontend-server-1
+    image: hotensv/web1:dev
+    container_name: web-frontend-server-1
+    networks: [cloud-net]
+    restart: unless-stopped
+
+  web-frontend-server-2:
+    build: ./web-frontend-server-2
+    image: hotensv/web2:dev
+    container_name: web-frontend-server-2
+    networks: [cloud-net]
+    restart: unless-stopped
+
+
+  web-frontend-server:
+    build: ./web-frontend-server
+    image: hotensv/web:dev
+    container_name: web-frontend-server
+    networks: [cloud-net]
+    ports: [ "8080:80" ]
+    restart: unless-stopped
+
+  application-backend-server:
+    build: ./application-backend-server
+    image: hotensv/app:dev
+    container_name: application-backend-server
+    networks: [cloud-net]
+    ports: [ "8085:8081" ]
+    environment:
+      # OIDC_ISSUER: "http://authentication-identity-server:8080/realms/master"
+      # OIDC_AUDIENCE: "myapp"
+      # KHỚP với iss trong token bạn lấy (URL nhìn từ MÁY bạn)
+      OIDC_ISSUER: "http://localhost:8081/realms/realm_52200183"
+      OIDC_AUDIENCE: "flask-app"            # Client ID phát token (client public)
+      # Dùng hostname service của Keycloak trong docker để container gọi
+      OIDC_INTROSPECT_URL: "http://authentication-identity-server:8080/realms/realm_52200183/protocol/openid-connect/token/introspect"
+      OIDC_INTROSPECT_CLIENT_ID: "backend-introspect"
+      OIDC_INTROSPECT_CLIENT_SECRET: "xoVeDIeu2SPJ9Lj8y4AY36sVMNvEKbtO"
+      # Chọn chế độ xác thực:
+      OIDC_MODE: "introspect"  
+      # ==== THÊM CHO MỞ RỘNG 3 ====
+      DB_HOST: relational-database-server
+      DB_USER: root
+      DB_PASSWORD: root
+      DB_NAME: studentdb
+    restart: unless-stopped
+
+  relational-database-server:
+    image: mariadb:11
+    container_name: relational-database-server
+    environment:
+      MARIADB_ROOT_PASSWORD: root
+      MARIADB_DATABASE: minicloud
+    volumes:
+      - ./relational-database-server/init:/docker-entrypoint-initdb.d:ro
+    ports: [ "3307:3306" ]
+    networks: [cloud-net]
+    restart: unless-stopped
+
+  authentication-identity-server:
+    image: quay.io/keycloak/keycloak:latest
+    container_name: authentication-identity-server
+    command: ["start-dev"]
+    environment:
+      KC_BOOTSTRAP_ADMIN_USERNAME: admin
+      KC_BOOTSTRAP_ADMIN_PASSWORD: admin
+      KC_HOSTNAME: "localhost"
+      KC_HOSTNAME_STRICT: "false"
+      KC_HTTP_ENABLED: "true"
+    ports: ["8081:8080"]
+    restart: unless-stopped
+    networks: [cloud-net]
+    volumes:
+      - keycloak_data:/opt/keycloak/data
+
+  object-storage-server:
+    image: minio/minio
+    container_name: object-storage-server
+    command: ["server", "/data", "--console-address", ":9001"]
+    environment:
+      MINIO_ROOT_USER: minioadmin
+      MINIO_ROOT_PASSWORD: minioadmin
+    volumes:
+      - ./object-storage-server/data:/data
+    ports: [ "9000:9000", "9001:9001" ]
+    networks: [cloud-net]
+    restart: unless-stopped
+
+  internal-dns-server:
+    image: coredns/coredns:latest
+    container_name: internal-dns-server
+    command: -conf /etc/coredns/Corefile
+    ports: [ "1053:53/udp","1053:53/tcp"]
+    volumes:
+      - ./internal-dns-server/Corefile:/etc/coredns/Corefile:ro
+      - ./internal-dns-server/db.cloud.local:/zones/db.cloud.local:ro
+    networks: [cloud-net]
+    restart: unless-stopped
+
+  monitoring-node-exporter-server:
+    image: prom/node-exporter:latest
+    container_name: monitoring-node-exporter-server
+    ports: [ "9100:9100" ]
+    networks: [cloud-net]
+    restart: unless-stopped
+
+  monitoring-prometheus-server:
+    image: prom/prometheus:latest
+    container_name: monitoring-prometheus-server
+    ports: [ "9090:9090" ]
+    volumes:
+      - ./monitoring-prometheus-server/prometheus.yml:/etc/prometheus/prometheus.yml:ro
+    networks: [cloud-net]
+    restart: unless-stopped
+
+  monitoring-grafana-dashboard-server:
+    image: grafana/grafana:latest
+    container_name: monitoring-grafana-dashboard-server
+    ports: [ "3000:3000" ]
+    networks: [cloud-net]
+    restart: unless-stopped
+
+  api-gateway-proxy-server:
+    image: nginx:stable
+    container_name: api-gateway-proxy-server
+    depends_on:
+      - web-frontend-server
+      - application-backend-server
+      - authentication-identity-server
+    ports: ["80:80"]
+    volumes:
+      - ./api-gateway-proxy-server/nginx.conf:/etc/nginx/nginx.conf:ro
+    networks: [cloud-net]
+    restart: unless-stopped
+
+

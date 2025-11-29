@@ -1,0 +1,21 @@
+cloud.local:53 {
+    hosts {
+        10.10.10.10 web-frontend-server.cloud.local
+        10.10.10.20 application-backend-server.cloud.local
+        10.10.10.30 object-storage-server.cloud.local
+        10.10.10.40 authentication-identity-server.cloud.local
+
+        10.10.10.30 minio.cloud.local
+        10.10.10.40 keycloak.cloud.local
+
+        fallthrough
+    }
+    log
+    errors
+}
+
+.:53 {
+    forward . /etc/resolv.conf
+    log
+    errors
+}

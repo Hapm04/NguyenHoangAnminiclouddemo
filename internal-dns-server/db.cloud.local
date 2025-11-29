@@ -1,0 +1,22 @@
+$TTL 1H
+@   IN SOA ns.cloud.local. admin.cloud.local. (
+        1        ; Serial
+        1H       ; Refresh
+        15M      ; Retry
+        1W       ; Expire
+        1H       ; Negative Cache TTL
+)
+    IN NS  ns.cloud.local.
+
+; DNS server
+ns                              IN A 10.10.10.2
+
+; Các server chính trong đề
+web-frontend-server             IN A 10.10.10.10
+object-storage-server           IN A 10.10.10.30
+application-backend-server      IN A 10.10.10.20
+authentication-identity-server  IN A 10.10.10.40
+
+; MỞ RỘNG: thêm minio & keycloak
+minio                           IN A 10.10.10.30  ; minio.cloud.local
+keycloak                        IN A 10.10.10.40  ; keycloak.cloud.local

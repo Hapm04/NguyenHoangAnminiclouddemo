@@ -1,0 +1,3 @@
+# HELP web_dummy_up Dummy metric to mark web as up
+# TYPE web_dummy_up gauge
+web_dummy_up 1
