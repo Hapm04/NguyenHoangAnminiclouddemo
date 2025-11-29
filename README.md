@@ -1,15 +1,15 @@
 # MyMiniCloud - Mô Phỏng Hệ Thống Cloud Platform Cơ Bản
 
 ## 1. Giới thiệu & Mục tiêu
-[cite_start]**MyMiniCloud** là dự án xây dựng hệ thống Cloud thu nhỏ, mô phỏng các thành phần hạ tầng cốt lõi của một Cloud Platform thực tế (tương tự AWS, Azure, GCP). Hệ thống bao gồm 9 loại máy chủ (services) cơ bản chạy trong các container riêng biệt, giao tiếp qua mạng nội bộ Docker và được quản lý tập trung[cite: 1, 3].
+**MyMiniCloud** là dự án xây dựng hệ thống Cloud thu nhỏ, mô phỏng các thành phần hạ tầng cốt lõi của một Cloud Platform thực tế (tương tự AWS, Azure, GCP). Hệ thống bao gồm 9 loại máy chủ (services) cơ bản chạy trong các container riêng biệt, giao tiếp qua mạng nội bộ Docker và được quản lý tập trung.
 
 Dự án phục vụ mục tiêu học tập về kiến trúc Microservices, Containerization, DevOps và System Administration.
 
 ## 2. Kiến trúc & Sơ đồ hệ thống
-[cite_start]Hệ thống bao gồm các container kết nối chung vào mạng nội bộ `cloud-net`[cite: 7].
+Hệ thống bao gồm các container kết nối chung vào mạng nội bộ `cloud-net`.
 
 ### Danh sách các Service (Container)
-[cite_start]Hệ thống được định nghĩa trong `docker-compose.yml` bao gồm các thành phần sau [cite: 226-308]:
+Hệ thống được định nghĩa trong `docker-compose.yml` bao gồm các thành phần sau :
 
 | STT | Tên Service | Role | Image / Công nghệ | Port (Host:Container) |
 |-----|-------------|------|-------------------|-----------------------|
@@ -68,7 +68,7 @@ hotenSVminicloud/
 
 ## 4. Demo & Kiểm thử (Checklist)
 
-[cite_start]Dưới đây là các bước kiểm thử chức năng từng server [cite: 15, 322-623]:
+Dưới đây là các bước kiểm thử chức năng từng server:
 
 ### 1. Web Frontend Server
 * **Mục tiêu:** Kiểm tra hiển thị trang web tĩnh.
@@ -91,7 +91,7 @@ hotenSVminicloud/
 ### 4. Authentication (Keycloak)
 * **Mục tiêu:** Kiểm tra dịch vụ đăng nhập OIDC.
 * **Truy cập:** `http://localhost:8081`
-* [cite_start]**User/Pass:** `admin` / `admin` [cite: 405-406].
+* **User/Pass:** `admin` / `admin` .
 * **Kết quả:** Đăng nhập thành công vào Admin Console.
 
 ### 5. Object Storage (MinIO)
@@ -106,19 +106,19 @@ hotenSVminicloud/
 * **Kết quả:** Trả về IP nội bộ của container (ví dụ `10.10.10.10`).
 
 ### 7. Monitoring & Logging (Prometheus + Grafana)
-* [cite_start]**Prometheus:** `http://localhost:9090` -> Kiểm tra **Status -> Targets** (Node Exporter phải UP)[cite: 453].
-* [cite_start]**Grafana:** `http://localhost:3000` -> Login `admin`/`admin` -> Dashboard hiển thị CPU/RAM [cite: 529-531].
+* **Prometheus:** `http://localhost:9090` -> Kiểm tra **Status -> Targets** (Node Exporter phải UP.
+* **Grafana:** `http://localhost:3000` -> Login `admin`/`admin` -> Dashboard hiển thị CPU/RAM .
 
 ### 8. API Gateway / Load Balancer
 * **Mục tiêu:** Kiểm tra routing và load balancing qua cổng duy nhất.
 * **Truy cập:** `http://localhost/` (Cổng 80).
-* [cite_start]**Load Balancing (Mở rộng):** Refresh trang nhiều lần để thấy sự thay đổi giữa `web-frontend-server-1` và `web-frontend-server-2` (Round Robin)[cite: 749].
+* **Load Balancing (Mở rộng):** Refresh trang nhiều lần để thấy sự thay đổi giữa `web-frontend-server-1` và `web-frontend-server-2` (Round Robin).
 * **Routing:**
     * `http://localhost/api/hello` -> Route về Backend.
     * `http://localhost/auth/` -> Route về Keycloak.
 
 ## 5. Tính năng mở rộng (Advanced)
-[cite_start]Dự án đã hoàn thành các yêu cầu mở rộng sau[cite: 751]:
+Dự án đã hoàn thành các yêu cầu mở rộng sau:
 1.  **Web:** Blog cá nhân với 3 bài viết theo chủ đề tự chọn.
 2.  **App:** API `/student` trả về danh sách sinh viên JSON.
 3.  **DB:** Tạo CSDL `studentdb` + bảng `students` và thực hiện CRUD cơ bản.
@@ -138,9 +138,3 @@ hotenSVminicloud/
 * **Log kết quả:** [ ]
 
 ---
-**Hình ảnh minh họa hệ thống:**
-![Sơ đồ hệ thống]()
-
-![Demo Web Interface]()
-
-![Demo Grafana Dashboard]()
