@@ -29,7 +29,7 @@ Kiểm tra API lấy danh sách sinh viên (đã cấu hình qua Proxy):
 
 ```bash
 # Kiểm tra API qua đường dẫn Proxy /student/
-curl -s http://localhost/student/
+curl -s http://localhost/student
 ```
 > **Kỳ vọng:** Kết quả trả về chuỗi JSON chứa danh sách sinh viên trong file students.json.
 
