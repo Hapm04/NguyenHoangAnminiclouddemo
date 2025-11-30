@@ -91,13 +91,7 @@ exit   -- Thoát khỏi Container, trở về terminal máy chủ
 
 ---
 
-## 4. 🛑 Dừng hệ thống
 
-Sau khi hoàn tất bài lab/demo, hãy dừng hệ thống để giải phóng tài nguyên:
-
-```bash
-docker compose down
-```
 ### 🟢 Phần 7: Monitoring (Giám sát Web Server)
 -7 Thêm 1 target mới để giám sát web-front-end-server
 vào file prometheus.yml thêm đoạn cấu hình 
@@ -125,4 +119,10 @@ Restart proxy container:
 docker restart api-gateway-proxy-server
 Test:
 curl http://localhost/student/
+## 4. 🛑 Dừng hệ thống
 
+Sau khi hoàn tất bài lab/demo, hãy dừng hệ thống để giải phóng tài nguyên:
+
+```bash
+docker compose down
+```
