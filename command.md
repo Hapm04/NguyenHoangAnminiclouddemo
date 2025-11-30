@@ -25,7 +25,7 @@ Truy cập trình duyệt để xem giao diện chính:
 * **URL:** [http://localhost:8080](http://localhost:8080)
 
 ### Kiểm tra Backend API (Server 2)
-Kiểm tra API lấy danh sách sinh viên (đã cấu hình qua Proxy):
+Kiểm tra API lấy danh sách sinh viên:
 
 ```bash
 # Kiểm tra API qua đường dẫn Proxy /student/ json hiện ra sẽ được lấy từ fiel students.json
@@ -36,6 +36,9 @@ curl http://localhost/api/db/student
 # Tương tự câu lệnh trên 
 curl http://localhost:8085/db/student
 ```
+
+Hoặc truy cập:
+* **URL:** [http://localhost:8085](http://localhost:8085)
 > **Kỳ vọng:** Kết quả trả về chuỗi JSON chứa danh sách sinh viên.
 
 
