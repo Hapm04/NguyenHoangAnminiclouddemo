@@ -98,3 +98,31 @@ Sau khi hoàn tất bài lab/demo, hãy dừng hệ thống để giải phóng 
 ```bash
 docker compose down
 ```
+### 🟢 Phần 7: Monitoring (Giám sát Web Server)
+-7 Thêm 1 target mới để giám sát web-front-end-server
+vào file prometheus.yml thêm đoạn cấu hình 
+- job_name: 'web'
+    metrics_path: '/metrics'
+    static_configs:
+      - targets: ['web-frontend-server:80']
+restart container và chạy kiểm tra
+### 🟢 Phần 8: Dasbboard (Giám sát Web Server)
+Ở phần 8 tạo data source :prometheus
+url cho data source là http://monitoring-prometheus-server:9090
+Chọn New Dashboard, import Dashboard
+ import node exporter bang cách import dashboard và nhập id 1860
+Tạo Dashboard MSSV với Network Traffic, CPU Usage, Memory Usage
+
+Query metric: node_cpu_seconds_total, node_memory_MemAvailable_bytes, 
+node_network_receive_bytes_total
+
+### 🟢 Phần 9: API Gateway Proxy Server (Nginx Reverse Proxy)
+Mở file nginx.conf, thêm:
+location /student/ {
+ proxy_pass http://application-backend-server:8081/student;
+}
+Restart proxy container:
+docker restart api-gateway-proxy-server
+Test:
+curl http://localhost/student/
+
