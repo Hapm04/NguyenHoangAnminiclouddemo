@@ -1,51 +1,8 @@
-# from flask import Flask, jsonify, request
-# import time, requests, os
-# from jose import jwt
-
-# ISSUER = os.getenv("OIDC_ISSUER", "http://authentication-identity-server:8080/realms/master")
-# AUDIENCE = os.getenv("OIDC_AUDIENCE", "myapp")
-# JWKS_URL = f"{ISSUER}/protocol/openid-connect/certs"
-
-# _JWKS = None
-# _TS = 0
-
-# def get_jwks():
-#     global _JWKS, _TS
-#     now = time.time()
-#     if not _JWKS or now - _TS > 600:
-#         _JWKS = requests.get(JWKS_URL, timeout=5).json()
-#         _TS = now
-#     return _JWKS
-
-# app = Flask(__name__)
-
-# @app.get("/hello")
-# def hello(): return jsonify(message="Hello from App Server!")
-
-# @app.get("/secure")
-# def secure():
-#     auth = request.headers.get("Authorization", "")
-#     if not auth.startswith("Bearer "):
-#         return jsonify(error="Missing Bearer token"), 401
-#     token = auth.split(" ", 1)[1]
-#     try:
-#         payload = jwt.decode(token, get_jwks(), algorithms=["RS256"], audience=AUDIENCE, issuer=ISSUER)
-#         return jsonify(message="Secure resource OK", preferred_username=payload.get("preferred_username"))
-#     except Exception as e:
-#         return jsonify(error=str(e)), 401
-
-# if __name__ == "__main__":
-#     app.run(host="0.0.0.0", port=8081)
-
-# application-backend-server/app.py
-
-
-from flask import Flask, jsonify, request
-import time, requests, os
+from flask import Flask, jsonify, request, render_template
+import time, requests, os, socket
 from jose import jwt
 import json
 import pymysql.cursors
-# Cấu hình mặc định
 DEFAULT_ISSUER = "http://authentication-identity-server:8080/realms/master"
 
 _JWKS_CACHE = {} 
@@ -54,11 +11,10 @@ def get_jwks(issuer_url):
     global _JWKS_CACHE
     now = time.time()
     
-    # --- FIX LỖI DOCKER ---
     internal_issuer_url = issuer_url
     if "localhost:8081" in internal_issuer_url:
         internal_issuer_url = internal_issuer_url.replace("localhost:8081", "authentication-identity-server:8080")
-    # ----------------------
+
 
     jwks_url = f"{internal_issuer_url}/protocol/openid-connect/certs"
     
@@ -75,6 +31,11 @@ def get_jwks(issuer_url):
 
 app = Flask(__name__)
 
+@app.route('/')
+def index():
+    container_id = socket.gethostname()
+    return render_template('index.html', hostname=container_id)
+
 @app.get("/hello")
 def hello(): return jsonify(message="Hello from App Server!")
 
@@ -87,21 +48,18 @@ def secure():
     token = auth.split(" ", 1)[1]
     
     try:
-        # 1. Giải mã xem Issuer là ai
         unverified_claims = jwt.get_unverified_claims(token)
         issuer_found = unverified_claims.get('iss')
         
-        # 2. Lấy Key
         jwks = get_jwks(issuer_found)
         if not jwks:
              return jsonify(error=f"Cannot fetch JWKS for issuer: {issuer_found}"), 401
 
-        # 3. Xác thực Token (ĐÃ SỬA: Tắt kiểm tra Audience)
         payload = jwt.decode(
             token, 
             jwks, 
             algorithms=["RS256"], 
-            options={"verify_aud": False}, # <--- QUAN TRỌNG: Bỏ qua lỗi Invalid audience
+            options={"verify_aud": False}, 
             issuer=issuer_found
         )
         
@@ -114,7 +72,6 @@ def secure():
     except Exception as e:
         return jsonify(error=str(e)), 401
     
-    # ================== MỞ RỘNG 2 ==================
 
 @app.get("/student")
 def student():
