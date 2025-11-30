@@ -25,7 +25,7 @@ Truy cập trình duyệt để xem giao diện chính:
 * **URL:** [http://localhost:8080](http://localhost:8080)
 
 ### Kiểm tra Backend API (Server 2)
-Kiểm tra API lấy danh sách sinh viên (đã cấu hình qua Proxy):
+Kiểm tra API lấy danh sách sinh viên:
 
 ```bash
 # Kiểm tra API qua đường dẫn Proxy /student/ json hiện ra sẽ được lấy từ fiel students.json
@@ -36,6 +36,9 @@ curl http://localhost/api/db/student
 # Tương tự câu lệnh trên 
 curl http://localhost:8085/db/student
 ```
+
+Hoặc truy cập:
+* **URL:** [http://localhost:8085](http://localhost:8085)
 > **Kỳ vọng:** Kết quả trả về chuỗi JSON chứa danh sách sinh viên.
 
 
@@ -91,6 +94,34 @@ exit   -- Thoát khỏi Container, trở về terminal máy chủ
 
 ---
 
+
+### 🟢 Phần 7: Monitoring (Giám sát Web Server)
+-7 Thêm 1 target mới để giám sát web-front-end-server
+vào file prometheus.yml thêm đoạn cấu hình 
+- job_name: 'web'
+    metrics_path: '/metrics'
+    static_configs:
+      - targets: ['web-frontend-server:80']
+restart container và chạy kiểm tra
+### 🟢 Phần 8: Dasbboard (Giám sát Web Server)
+Ở phần 8 tạo data source :prometheus
+url cho data source là http://monitoring-prometheus-server:9090
+Chọn New Dashboard, import Dashboard
+ import node exporter bang cách import dashboard và nhập id 1860
+Tạo Dashboard MSSV với Network Traffic, CPU Usage, Memory Usage
+
+Query metric: node_cpu_seconds_total, node_memory_MemAvailable_bytes, 
+node_network_receive_bytes_total
+
+### 🟢 Phần 9: API Gateway Proxy Server (Nginx Reverse Proxy)
+Mở file nginx.conf, thêm:
+location /student/ {
+ proxy_pass http://application-backend-server:8081/student;
+}
+Restart proxy container:
+docker restart api-gateway-proxy-server
+Test:
+curl http://localhost/student/
 ## 4. 🛑 Dừng hệ thống
 
 Sau khi hoàn tất bài lab/demo, hãy dừng hệ thống để giải phóng tài nguyên:
