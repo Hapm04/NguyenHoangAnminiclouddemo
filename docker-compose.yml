@@ -36,7 +36,7 @@ services:
     networks: [cloud-net]
     ports: [ "8085:8081" ]
     environment:
-      OIDC_ISSUER: "http://localhost:8081/realms/realm_52200183"
+      # OIDC_ISSUER: "http://localhost:8081/realms/realm_52200183"
       OIDC_AUDIENCE: "flask-app"  
       OIDC_INTROSPECT_URL: "http://authentication-identity-server:8080/realms/realm_52200183/protocol/openid-connect/token/introspect"
       OIDC_INTROSPECT_CLIENT_ID: "backend-introspect"

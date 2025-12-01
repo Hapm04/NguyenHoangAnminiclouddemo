@@ -66,7 +66,7 @@ def secure():
         return jsonify(
             message="Secure resource OK", 
             preferred_username=payload.get("preferred_username"),
-            issuer=issuer_found
+            # issuer=issuer_found
         )
         
     except Exception as e:
