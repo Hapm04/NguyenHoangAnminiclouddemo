@@ -95,6 +95,141 @@ exit   -- Thoát khỏi Container, trở về terminal máy chủ
 ---
 
 
+
+
+
+
+### 🟢 Phần 4: Authentication & Secure API (Keycloak + Backend)
+
+- **Bước 1: Đăng nhập trang tài khoản người dùng**
+  - Truy cập: [http://localhost:8081/realms/realm_sv52200183/account](http://localhost:8081/realms/realm_sv52200183/account)
+  - Đăng nhập với tài khoản mẫu:
+    - **sv01 / sv01**
+    - **sv02 / sv02**
+  - Đăng nhập thành công là **OK**.
+
+- **Bước 2: Lấy Access Token cho tài khoản `sv01`**
+
+```powershell
+curl.exe -s -X POST -H "Content-Type: application/x-www-form-urlencoded" `
+  -d "client_id=flask-app" -d "grant_type=password" -d "username=sv01" `
+  -d "password=sv01" http://localhost:8081/realms/realm_sv52200183/protocol/openid-connect/token `
+  | ConvertFrom-Json | Select-Object -ExpandProperty access_token | Out-File -FilePath token.txt -Encoding utf8
+```
+
+- **Bước 3: Lấy Access Token cho tài khoản `sv02` (tương tự)**
+
+```powershell
+curl.exe -s -X POST -H "Content-Type: application/x-www-form-urlencoded" `
+  -d "client_id=flask-app" -d "grant_type=password" -d "username=sv02" `
+  -d "password=sv02" http://localhost:8081/realms/realm_sv52200183/protocol/openid-connect/token `
+  | ConvertFrom-Json | Select-Object -ExpandProperty access_token | Out-File -FilePath token.txt -Encoding utf8
+```
+
+- **Bước 4: Test endpoint `/secure` qua API Gateway**
+
+```powershell
+$token = Get-Content token.txt -Raw | ForEach-Object { $_.Trim() }
+curl.exe -H "Authorization: Bearer $token" http://localhost/api/secure
+```
+
+- **Bước 5: Test endpoint `/secure` trực tiếp Backend**
+
+```powershell
+$token = Get-Content token.txt -Raw | ForEach-Object { $_.Trim() }
+curl.exe -H "Authorization: Bearer $token" http://localhost:8085/secure
+```
+
+- **Bước 6: Cách test nhanh bằng một lệnh duy nhất**
+
+```powershell
+curl.exe -H "Authorization: Bearer $(Get-Content token.txt -Raw | ForEach-Object { $_.Trim() })" http://localhost/api/secure
+```
+
+---
+
+### 🟢 Phần 5: Object Storage (MinIO)
+
+- **Bước 1: Đăng nhập MinIO Console**
+  - Truy cập: [http://localhost:9001](http://localhost:9001)
+  - Tài khoản: **minioadmin / minioadmin**
+
+- **Bước 2: Cấu hình alias và quyền trong MinIO (tài khoản admin)**
+
+```bash
+docker exec -it object-storage-server mc alias set mylocal http://localhost:9000 minioadmin minioadmin
+```
+
+- **Bước 3: Cấp quyền Public cho bucket chứa ảnh**
+
+```bash
+docker exec -it object-storage-server mc anonymous set download mylocal/avtsource
+```
+
+- **Bước 4: Cấp quyền Public cho bucket chứa báo cáo**
+
+```bash
+docker exec -it object-storage-server mc anonymous set download mylocal/documents
+```
+
+- **Bước 5: Kiểm tra truy cập file qua HTTP**
+  - Xem ảnh: `http://localhost:9000/avtsource/cloud.jpg`
+  - Xem báo cáo: `http://localhost:9000/documents/baocao.pdf`
+
+---
+
+### 🟢 Phần 6: Internal DNS & Kiểm tra Kết nối Mạng
+
+- **Bước 1: Cài công cụ `dig` trên Windows (nếu chưa có)**
+  - Mở Visual Studio Code với quyền **Run as Administrator** (hoặc terminal admin).
+  - Cài đặt:
+
+```bash
+choco install bind-toolsonly -y
+```
+
+- **Bước 2: Kiểm tra phân giải DNS từ máy host**
+
+```bash
+dig "@127.0.0.1" -p 1053 web-frontend-server.cloud.local +short
+dig "@127.0.0.1" -p 1053 object-storage-server.cloud.local +short
+dig "@127.0.0.1" -p 1053 application-backend-server.cloud.local +short
+dig "@127.0.0.1" -p 1053 authentication-identity-server.cloud.local +short
+dig "@127.0.0.1" -p 1053 minio.cloud.local +short
+dig "@127.0.0.1" -p 1053 keycloak.cloud.local +short
+```
+
+- **Bước 3: Kiểm tra kết nối từ bên trong mạng `cloud-net`**
+
+Chạy container tạm trong network `cloud-net`:
+
+```bash
+docker run -it --rm --network cloud-net alpine sh
+```
+
+Nếu thành công, prompt sẽ có dạng: `/ #`
+
+Thực hiện ping các server:
+
+```bash
+ping -c 3 web-frontend-server
+ping -c 3 application-backend-server
+ping -c 3 relational-database-server
+ping -c 3 authentication-identity-server
+ping -c 3 object-storage-server
+ping -c 3 monitoring-prometheus-server
+ping -c 3 monitoring-grafana-dashboard-server
+ping -c 3 internal-dns-server
+```
+
+Thoát khỏi container alpine:
+
+```bash
+exit
+```
+
+---
+
 ### 🟢 Phần 7: Monitoring (Giám sát Web Server)
 -7 Thêm 1 target mới để giám sát web-front-end-server
 vào file prometheus.yml thêm đoạn cấu hình 
